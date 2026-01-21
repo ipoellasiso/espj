@@ -19,7 +19,7 @@ class RkaExport implements FromView
         $anggaran = Anggaran::with(['rincian', 'subKegiatan.kegiatan.program.bidang.urusan'])->findOrFail($this->id);
         $rincian = $this->buildHierarki($anggaran->rincian);
 
-        return view('Laporan.Export.Excel', compact('anggaran', 'rincian'));
+        return view('laporan.Export.Excel', compact('anggaran', 'rincian'));
     }
 
     private function buildHierarki($items, $parentId = null)
