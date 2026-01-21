@@ -41,7 +41,7 @@ Route::get('/laporan/import', [LaporanAnggaranController::class, 'importPage'])-
 Route::post('/laporan/import', [LaporanAnggaranController::class, 'importExcel'])->name('laporan.import.post')->middleware('auth:web','checkRole:Admin,User');
 
 // DATA RKA
-Route::get('/rka', [LaporanAnggaranController::class, 'index'])->name('rka.index')->middleware('auth:web','checkRole:Admin,User');
+Route::get('/rka', [LaporanAnggaranController::class, 'index'])->middleware('auth:web','checkRole:Admin,User');
 Route::get('/rka/data', [LaporanAnggaranController::class, 'getData'])->name('rka.data')->middleware('auth:web','checkRole:Admin,User');
 Route::get('/rka/{id}', [LaporanAnggaranController::class, 'show'])->name('rka.show')->middleware('auth:web','checkRole:Admin,User');
 Route::post('/rka/store', [LaporanAnggaranController::class, 'store'])->name('rka.store')->middleware('auth:web','checkRole:Admin,User');
