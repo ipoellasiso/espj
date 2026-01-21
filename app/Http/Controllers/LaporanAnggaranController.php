@@ -97,7 +97,7 @@ class LaporanAnggaranController extends Controller
                 ->make(true);
         }
 
-        return view('Laporan.Index', $data);
+        return view('laporan.index', $data);
     }
 
     // === Tampilkan detail RKA ===
@@ -130,7 +130,7 @@ class LaporanAnggaranController extends Controller
             'active_lock'   => $active_lock,   // <–– KIRIM KE BLADE
         ];
 
-        return view('Laporan.Show', $data);
+        return view('laporan.show', $data);
     }
 
     private function buildHierarki($subRincian)
