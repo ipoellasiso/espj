@@ -71,7 +71,7 @@
     </div>
 </div>
 
-@include('Laporan.Modal.Tambah')
-@include('Laporan.Fungsi.Fungsi')
+@include('laporan.Modal.Tambah')
+@include('laporan.Fungsi.Fungsi')
 
 @endsection
