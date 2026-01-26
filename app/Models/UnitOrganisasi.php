@@ -23,7 +23,10 @@ class UnitOrganisasi extends Model
         'pejabatbarang',
         'nip_pejabatbarang',
         'nomor_sk',
-        'tanggal_sk'
+        'tanggal_sk',
+        'alamat',
+        'bend_barang',
+        'nip_bend_barang'
     ];
 
     public function bidang()

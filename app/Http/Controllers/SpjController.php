@@ -152,6 +152,20 @@ public function store(Request $request)
     DB::beginTransaction();
 
     try {
+
+        // 🔒 CEK RKA SUDAH DIKUNCI (PER OPD)
+        $lock = \App\Models\RkaLock::where('is_active', 1)
+            ->where('id_unit', Auth::user()->id_unit)
+            ->first();
+
+        if (!$lock || $lock->is_locked == 0) {
+            DB::rollBack(); // ⬅ WAJIB
+            return response()->json([
+                'success' => false,
+                'message' => 'RKA belum dikunci. SPJ tidak dapat dibuat.'
+            ], 403);
+        }
+
         $request->validate([
             'tanggal' => 'required|date',
             'id_anggaran' => 'required|integer|exists:anggaran,id',
@@ -1150,29 +1164,29 @@ public function cetakPenerimaan($id)
 
     public function getRkaForSpj()
     {
-        // Ambil tahap aktif
-        $active = \App\Models\RkaLock::where('is_active', 1)->first();
+        $user = Auth::user();
 
-        // Jika belum ada tahap aktif → jangan tampilkan apapun
-        if (!$active) {
-            return response()->json([]);
+        // ambil lock tahap AKTIF milik OPD login
+        $lock = \App\Models\RkaLock::where('is_active', 1)
+            ->where('id_unit', $user->id_unit)
+            ->first();
+
+        // 🚫 BELUM ADA TAHAP AKTIF ATAU BELUM DIKUNCI
+        if (!$lock || $lock->is_locked == 0) {
+            return response()->json([]); // => Select2 akan "No results found"
         }
 
-        // Jika tahap aktif tidak dikunci → RKA tidak boleh dipilih
-        if ($active->is_locked == 0) {
-            return response()->json([]);
-        }
-
-        // Jika dikunci → tampilkan semua RKA milik user login
+        // ✅ TAHAP SUDAH DIKUNCI → BOLEH SPJ
         $rka = Anggaran::with('subKegiatan')
-            ->where('id_unit', Auth::user()->id_unit)
+            ->where('id_unit', $user->id_unit)
+            ->where('sisa_pagu', '>', 0) // 🔥 opsional tapi BAGUS
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($a) {
                 return [
                     'id'   => $a->id,
                     'text' => $a->subKegiatan->kode . ' - ' . $a->subKegiatan->nama,
-                    'sisa_pagu' => $a->sisa_pagu,
+                    'sisapagu' => $a->sisa_pagu,
                 ];
             });
 

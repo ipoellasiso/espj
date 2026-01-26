@@ -176,7 +176,6 @@
                     dataType: 'json',
                     processResults: function (data) {
 
-                        // jika tahap belum dikunci
                         if (!data || data.length === 0) {
                             return {
                                 results: [

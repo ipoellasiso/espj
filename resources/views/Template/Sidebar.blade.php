@@ -50,7 +50,7 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                @if(Auth::user()->role == 'Admin')
+                
                     <li class="sidebar-title">Pengaturan</li>
 
                     <li class="sidebar-item  has-sub @if(isset($active_master_data)){{ $active_master_data }} @endif">
@@ -58,43 +58,53 @@
                             <i class="bi bi-pen-fill"></i>
                             <span>Master Data</span>
                         </a>
-                        <ul class="submenu @if(isset($active_subopd)){{ $active_subopd }} @endif">
-                            <li class="submenu-item @if(isset($active_bidang)){{ $active_bidang }} @endif">
-                                <a href="/bidang-urusan">Bidang</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_unit)){{ $active_unit }} @endif">
-                                <a href="/unit-organisasi">Unit</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_program)){{ $active_program }} @endif">
-                                <a href="/program">Program</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_kegiatan)){{ $active_kegiatan }} @endif">
-                                <a href="/kegiatan">Kegiatan</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_sub_kegiatan)){{ $active_sub_kegiatan }} @endif">
-                                <a href="/sub-kegiatan">Sub Kegiatan</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_rekening)){{ $active_rekening }} @endif">
-                                <a href="/akun">Akun</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_rekening2)){{ $active_rekening2 }} @endif">
-                                <a href="/kelompok">Kelompok</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_rekening3)){{ $active_rekening3 }} @endif">
-                                <a href="/jenis">Jenis</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_rekening4)){{ $active_rekening4 }} @endif">
-                                <a href="/objek">Objek</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_rekening5)){{ $active_rekening5 }} @endif">
-                                <a href="/rincian_objek">Rincian Objek</a>
-                            </li>
-                            <li class="submenu-item @if(isset($active_rekening6)){{ $active_rekening6 }} @endif">
-                                <a href="/sub_rincian_objek">Sub Rincian Objek</a>
-                            </li>
-                        </ul>
+                        @if(Auth::user()->role == 'Admin')
+                            <ul class="submenu @if(isset($active_subopd)){{ $active_subopd }} @endif">
+                                <li class="submenu-item @if(isset($active_bidang)){{ $active_bidang }} @endif">
+                                    <a href="/bidang-urusan">Bidang</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_unit)){{ $active_unit }} @endif">
+                                    <a href="/unit-organisasi">Unit</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_program)){{ $active_program }} @endif">
+                                    <a href="/program">Program</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_kegiatan)){{ $active_kegiatan }} @endif">
+                                    <a href="/kegiatan">Kegiatan</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_sub_kegiatan)){{ $active_sub_kegiatan }} @endif">
+                                    <a href="/sub-kegiatan">Sub Kegiatan</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_rekening)){{ $active_rekening }} @endif">
+                                    <a href="/akun">Akun</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_rekening2)){{ $active_rekening2 }} @endif">
+                                    <a href="/kelompok">Kelompok</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_rekening3)){{ $active_rekening3 }} @endif">
+                                    <a href="/jenis">Jenis</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_rekening4)){{ $active_rekening4 }} @endif">
+                                    <a href="/objek">Objek</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_rekening5)){{ $active_rekening5 }} @endif">
+                                    <a href="/rincian_objek">Rincian Objek</a>
+                                </li>
+                                <li class="submenu-item @if(isset($active_rekening6)){{ $active_rekening6 }} @endif">
+                                    <a href="/sub_rincian_objek">Sub Rincian Objek</a>
+                                </li>
+                            </ul>
+                        @endif
+                        @if(Auth::user()->role == 'User')
+                            <ul class="submenu @if(isset($active_subopd)){{ $active_subopd }} @endif">
+                                <li class="submenu-item @if(isset($active_bidang)){{ $active_bidang }} @endif">
+                                    <a href="/pptk/pptk">Pptk</a>
+                                </li>
+                            </ul>
+                        @endif
                     </li>
 
+                @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Verifikasi')
                     <li class="sidebar-item  has-sub @if(isset($active_kelola_user)){{ $active_kelola_user }} @endif">
                         <a href="#" class='sidebar-link'>
                             <i class="bi bi-person-circle"></i>

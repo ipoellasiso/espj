@@ -531,12 +531,14 @@ class LaporanAnggaranController extends Controller
 
     private function isRkaLocked()
     {
-        // ambil tahap aktif
-        $active = RkaLock::where('is_active', 1)->first();
+        $user = Auth::user();
 
-        if (!$active) return false; // jika belum ada tahap aktif, jangan kunci
+        $active = RkaLock::where('is_active', 1)
+            ->where('id_unit', $user->id_unit)
+            ->first();
 
-        // cek apakah tahap aktif sedang dikunci
+        if (!$active) return false;
+
         return $active->is_locked == 1;
     }
 
@@ -552,20 +554,27 @@ class LaporanAnggaranController extends Controller
 
     public function toggleLock(Request $request)
     {
-        $lock = RkaLock::where('tahap', $request->tahap)->first();
+        $user = Auth::user();
 
-        if (!$lock) {
-            return response()->json(['message' => 'Tahap tidak ditemukan'], 404);
-        }
+        $lock = RkaLock::firstOrCreate(
+            [
+                'tahap'   => $request->tahap,
+                'id_unit' => $user->id_unit
+            ],
+            [
+                'is_active' => 1,
+                'is_locked' => 0
+            ]
+        );
 
-        $lock->is_locked = $lock->is_locked ? 0 : 1;
+        $lock->is_locked = !$lock->is_locked;
         $lock->save();
 
         return response()->json([
             'success' => true,
-            'message' => $lock->is_locked 
-                ? 'Tahap berhasil dikunci!' 
-                : 'Tahap berhasil dibuka!'
+            'message' => $lock->is_locked
+                ? 'Tahap OPD berhasil dikunci'
+                : 'Tahap OPD berhasil dibuka'
         ]);
     }
 

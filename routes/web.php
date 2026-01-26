@@ -10,6 +10,7 @@ use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\Landing_pageController;
 use App\Http\Controllers\LaporanAnggaranController;
 use App\Http\Controllers\ObjekController;
+use App\Http\Controllers\PptkController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RincianObjekController;
 use App\Http\Controllers\SpjController;
@@ -217,6 +218,13 @@ Route::middleware(['auth:web', 'checkRole:User'])->group(function () {
 
     Route::get('/spj/rka/list', [SpjController::class, 'getRkaForSpj']);
     
+});
+
+Route::prefix('pptk')->group(function () {
+    Route::get('/pptk', [PptkController::class, 'index'])->name('pptk.index')->middleware('auth:web','checkRole:User');
+    Route::post('/store', [PptkController::class, 'store'])->middleware('auth:web','checkRole:User');
+    Route::get('/edit/{id}', [PptkController::class, 'edit'])->middleware('auth:web','checkRole:User');
+    Route::delete('/destroy/{id}', [PptkController::class, 'destroy'])->middleware('auth:web','checkRole:User');
 });
 
 Route::get('/debug/kegiatan/{id}', function ($id) {

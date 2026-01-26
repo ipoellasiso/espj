@@ -69,11 +69,25 @@ class UnitOrganisasiController extends Controller
             'id_bidang' => 'required'
         ]);
 
-        $data = [
-            'kode' => $request->kode,
-            'nama' => $request->nama,
-            'id_bidang' => $request->id_bidang
-        ];
+        $data = $request->only([
+            'kode',
+            'nama',
+            'id_bidang',
+            'ket',
+            'kepala',
+            'nip_kepala',
+            'bendahara',
+            'nip_bendahara',
+            'ppk',
+            'nip_ppk',
+            'alamat',
+            'pejabatbarang',
+            'nip_pejabatbarang',
+            'nomor_sk',
+            'tanggal_sk',
+            'bend_barang',
+            'nip_bend_barang'
+        ]);
 
         if ($request->id) {
             UnitOrganisasi::find($request->id)->update($data);
