@@ -131,9 +131,11 @@
 
             fetch('/cek_login', {
                 method: 'POST',
-                credentials: 'same-origin', // ⬅️ INI KUNCI UTAMANYA
+                credentials: 'same-origin',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'),
                     'Accept': 'application/json'
                 },
                 body: formData
