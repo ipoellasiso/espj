@@ -9,12 +9,19 @@ class Rekanan extends Model
 {
     use HasFactory;
     protected $table = 'rekanan'; // ← sesuai tabel kamu
+    public $timestamps = false;
     protected $fillable = [
-        'id',
-        'nama_rekanan',
+        'nama_rekanan',   // 🔥 WAJIB ADA INI
         'alamat',
         'npwp',
         'jabatan',
-        'nip'
+        'nip',
+        'id_unit'
     ];
+
+    public function unit()
+    {
+        return $this->belongsTo(UnitOrganisasi::class, 'id_unit');
+    }
+    
 }

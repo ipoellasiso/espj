@@ -100,6 +100,9 @@
                                 <li class="submenu-item @if(isset($active_bidang)){{ $active_bidang }} @endif">
                                     <a href="/pptk/pptk">Pptk</a>
                                 </li>
+                                <li class="submenu-item @if(isset($active_rekanan)){{ $active_rekanan }} @endif">
+                                    <a href="/rekanan">Rekanan</a>
+                                </li>
                             </ul>
                         @endif
                     </li>

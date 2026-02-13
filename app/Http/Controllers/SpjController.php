@@ -34,7 +34,7 @@ public function index(Request $request)
         ->get();
 
     // 🔥 Tambahkan ini
-    $rekanan = \App\Models\Rekanan::all();
+    $rekanan = \App\Models\Rekanan::where('id_unit', $user->id_unit)->get();
 
     // Data untuk view
     $data = [
@@ -180,6 +180,22 @@ public function store(Request $request)
         $user = \App\Models\UserModel::with('unit')->find(Auth::id());
         $tahun = date('Y', strtotime($request->tanggal));
         $unitCode = strtoupper($user->unit->ket ?? 'UNDEF');
+
+        // 🔥 VALIDASI REKANAN SESUAI OPD LOGIN (ANTI INJECT)
+        if ($request->id_rekanan) {
+
+            $validRekanan = \App\Models\Rekanan::where('id_unit', $user->id_unit)
+                ->where('id', $request->id_rekanan)
+                ->exists();
+
+            if (!$validRekanan) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Rekanan tidak valid untuk OPD ini'
+                ], 403);
+            }
+        }
 
         // 🔹 Fungsi ambil nomor dokumen otomatis
         $getNomor = function ($jenis) use ($user, $tahun) {
@@ -433,7 +449,6 @@ public function destroy($id)
         ]);
     }
 }
-
 
 // ✅ Ambil rekening berdasarkan RKA
 public function getRekening($id_anggaran)
@@ -1219,6 +1234,33 @@ public function cetakHonor($id)
         });
 
     return response()->json($rka);
+}
+
+ public function getRekanan(Request $request)
+{
+    $search = $request->q;
+    $user   = Auth::user();
+
+    $rekanan = \App\Models\Rekanan::where('id_unit', $user->id_unit)
+
+        ->when($search, function ($q) use ($search) {
+            $q->where('nama_rekanan', 'like', "%$search%");
+        })
+
+        ->orderBy('nama_rekanan')
+        ->limit(20) // 🔥 WAJIB untuk performa
+        ->get()
+
+        ->map(function ($r) {
+            return [
+                'id'   => $r->id,
+                'text' => $r->nama_rekanan,
+                'alamat' => $r->alamat,
+                'npwp' => $r->npwp,
+            ];
+        });
+
+    return response()->json($rekanan);
 }
 
 }

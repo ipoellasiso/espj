@@ -23,6 +23,7 @@
                 <label>Jenis Kwitansi</label>
                 <select name="jenis_kwitansi" id="jenis_kwitansi" class="form-select select2">
                     <option value="">-- Pilih Jenis Kwitansi --</option>
+                    <option value="gj_tpp">Kwitansi Gaji & TPP</option>
                     <option value="pihak_ketiga">Kwitansi Pihak Ketiga</option>
                     <option value="honor_transport">Kwitansi Honor/Insentif</option>
                     <option value="kontrak">Kwitansi Kontrak</option>
@@ -50,11 +51,14 @@
 
             <div class="col-md-4 mb-2">
               <label>Penerima (Rekanan)</label>
-              <select name="id_rekanan" id="selectRekanan" class="form-control select2">
-                  <option value="">-- Pilih Rekanan --</option>
+              {{-- <select name="id_rekanan" id="selectRekanan" class="form-control select2"> --}}
+                  <select name="id_rekanan" id="selectRekanan" class="form-select select2" style="width: 100%;">
+                      <option value="">-- Pilih Rekanan --</option>
+                  </select>
+                  {{-- <option value="">-- Pilih Rekanan --</option>
                   @foreach ($rekanan as $r)
                       <option value="{{ $r->id }}">{{ $r->nama_rekanan }}</option>
-                  @endforeach
+                  @endforeach --}}
               </select>
             </div>
 
@@ -70,7 +74,7 @@
 
             <div class="col-md-4 mb-2">
                 <label>Sumber Dana</label>
-                <select name="sumber_dana" id="selectSumberDana" class="form-control">
+                <select name="sumber_dana" id="selectSumberDana" class="form-select select2" style="width: 100%;">
                     <option value="">-- Pilih Sumber Dana --</option>
                     <option value="DAU">DAU</option>
                     <option value="DAK">DAK</option>

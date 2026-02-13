@@ -10,6 +10,16 @@ td.wrap-uraian {
     max-width: 350px;   /* Bisa disesuaikan */
 }
 
+.select2-container .select2-selection--single {
+    height: 38px !important;
+    padding: 4px 10px !important;
+    border: 1px solid #ced4da !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection {
+    min-height: 38px !important;
+}
+
 </style>
 
 <div class="card">

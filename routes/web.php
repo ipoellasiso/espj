@@ -13,6 +13,7 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ObjekController;
 use App\Http\Controllers\PptkController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\RekananController;
 use App\Http\Controllers\RincianObjekController;
 use App\Http\Controllers\SpjController;
 use App\Http\Controllers\SpjPrintController;
@@ -198,6 +199,8 @@ Route::middleware(['auth:web', 'checkRole:User'])->group(function () {
     Route::get('/spj/{id}/edit', [SpjController::class, 'edit'])->name('spj.edit');
     Route::put('/spj/{id}', [SpjController::class, 'update'])->name('spj.update');
 
+    Route::get('/rekanan/list', [SpjController::class, 'getRekanan'])->name('rekanan.list');
+
     Route::get('/spj/cetak-resmi/{id}', [App\Http\Controllers\SpjPrintController::class, 'cetakResmi'])->name('spj.cetak.resmi');
     Route::get('/spj/get-rincian/{id}', [SpjController::class, 'getRincian']);
     Route::delete('/spj/{id}', [SpjController::class, 'destroy'])->name('spj.destroy');
@@ -237,3 +240,9 @@ Route::prefix('pptk')->group(function () {
 Route::get('/debug/kegiatan/{id}', function ($id) {
     return \App\Models\Kegiatan::find($id);
 });
+
+//DATA REKANAN
+Route::get('/rekanan', [RekananController::class, 'index'])->name('rekanan.index')->middleware('auth:web','checkRole:User');
+Route::post('/rekanan/store', [RekananController::class, 'store'])->middleware('auth:web','checkRole:User');
+Route::get('/rekanan/edit/{id}', [RekananController::class, 'edit'])->middleware('auth:web','checkRole:User');
+Route::delete('/rekanan/destroy/{id}', [RekananController::class, 'destroy'])->middleware('auth:web','checkRole:User');
