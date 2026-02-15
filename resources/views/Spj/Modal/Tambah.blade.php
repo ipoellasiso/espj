@@ -74,7 +74,7 @@
 
             <div class="col-md-4 mb-2">
                 <label>Sumber Dana</label>
-                <select name="sumber_dana" id="selectSumberDana" class="form-select select2" style="width: 100%;">
+                <select name="sumber_dana" id="selectSumberDana" class="form-select select2" style="width: 100%;" required>
                     <option value="">-- Pilih Sumber Dana --</option>
                     <option value="DAU">DAU</option>
                     <option value="DAK">DAK</option>
@@ -85,7 +85,7 @@
 
             <div class="col-md-12 mb-2">
               <label>Uraian</label>
-              <textarea name="uraian" class="form-control" rows="2" placeholder="Masukkan uraian..."></textarea>
+              <textarea name="uraian" class="form-control" rows="2" placeholder="Masukkan uraian..." required></textarea>
             </div>
           </div>
 
