@@ -23,10 +23,10 @@
                 <label>Jenis Kwitansi</label>
                 <select name="jenis_kwitansi" id="jenis_kwitansi" class="form-select select2">
                     <option value="">-- Pilih Jenis Kwitansi --</option>
-                    <option value="gj_tpp">Kwitansi Gaji & TPP</option>
+                    {{-- <option value="gj_tpp">Kwitansi Gaji & TPP</option> --}}
                     <option value="pihak_ketiga">Kwitansi Pihak Ketiga</option>
                     <option value="honor_transport">Kwitansi Honor/Insentif</option>
-                    <option value="kontrak">Kwitansi Kontrak</option>
+                    {{-- <option value="kontrak">Kwitansi Kontrak</option> --}}
                 </select>
             </div>
 
@@ -77,9 +77,13 @@
                 <select name="sumber_dana" id="selectSumberDana" class="form-select select2" style="width: 100%;" required>
                     <option value="">-- Pilih Sumber Dana --</option>
                     <option value="DAU">DAU</option>
-                    <option value="DAK">DAK</option>
+                    <option value="DAU Kelurahan">DAU Kelurahan</option>
+                    <option value="DAK Fisik">DAK Fisik</option>
+                    <option value="DAK Non Fisik">DAK Non Fisik</option>
                     <option value="PAD">PAD</option>
-                    <option value="DBH">DBH</option>
+                    <option value="PAD TPP">PAD TPP</option>
+                    <option value="DBH Provinsi">DBH Provinsi</option>
+                    <option value="DBH Pusat">DBH Pusat</option>
                 </select>
             </div>
 

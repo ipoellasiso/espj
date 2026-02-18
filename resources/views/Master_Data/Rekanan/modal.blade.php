@@ -21,7 +21,7 @@
                         </div>
 
                         <div class="mb-2">
-                            <label>NPWP</label>
+                            <label>Nama Instansi/Perusahaan/Toko</label>
                             <input type="text" name="npwp" id="npwp" class="form-control">
                         </div>
 

@@ -9,8 +9,11 @@ use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\Landing_pageController;
 use App\Http\Controllers\LaporanAnggaranController;
+use App\Http\Controllers\LpjController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ObjekController;
+use App\Http\Controllers\PaDashboardController;
+use App\Http\Controllers\PpkDashboardController;
 use App\Http\Controllers\PptkController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RekananController;
@@ -258,3 +261,44 @@ Route::get('/rekanan', [RekananController::class, 'index'])->name('rekanan.index
 Route::post('/rekanan/store', [RekananController::class, 'store'])->middleware('auth:web','checkRole:User');
 Route::get('/rekanan/edit/{id}', [RekananController::class, 'edit'])->middleware('auth:web','checkRole:User');
 Route::delete('/rekanan/destroy/{id}', [RekananController::class, 'destroy'])->middleware('auth:web','checkRole:User');
+
+/* ──────────────────────────────────────
+    |  LPJ — Laporan Pertanggungjawaban
+────────────────────────────────────── */
+Route::prefix('lpj')->name('lpj.')->group(function () {
+
+    // CRUD Dasar
+    Route::get('/',[App\Http\Controllers\LpjController::class, 'index'])->name('index')->middleware('auth:web','checkRole:User');
+    Route::get('/create',[App\Http\Controllers\LpjController::class, 'create'])->name('create')->middleware('auth:web','checkRole:User');
+    Route::post('/',[App\Http\Controllers\LpjController::class, 'store'])->name('store')->middleware('auth:web','checkRole:User');
+    Route::get('/{id}',[App\Http\Controllers\LpjController::class, 'show'])->name('show');
+    Route::delete('/{id}', [App\Http\Controllers\LpjController::class, 'destroy'])->name('destroy')->middleware('auth:web','checkRole:User');
+
+    // Alur Status
+    Route::post('/{id}/ajukan',[App\Http\Controllers\LpjController::class, 'ajukan'])->name('ajukan')->middleware('auth:web','checkRole:User');
+
+    // Verifikasi PPK
+    Route::get( '/{id}/verifikasi-ppk',[App\Http\Controllers\LpjController::class, 'formVerifikasiPpk'])->name('verifikasi_ppk.form');
+    Route::post('/{id}/verifikasi-ppk',[App\Http\Controllers\LpjController::class, 'prosesVerifikasiPpk'])->name('verifikasi_ppk.proses');
+    Route::post('/{id}/unverifikasi-ppk', [LpjController::class, 'unverifikasiPpk'])->name('unverifikasi_ppk');
+
+    // Approval PA/KPA
+    Route::get( '/{id}/approval-pa',[App\Http\Controllers\LpjController::class, 'formApprovalPa'])->name('approval_pa.form');
+    Route::post('/{id}/approval-pa',    [App\Http\Controllers\LpjController::class, 'prosesApprovalPa'])->name('approval_pa.proses');
+    Route::post('/{id}/unapproval-pa', [LpjController::class, 'unapprovalPa'])->name('unapproval_pa');
+
+    // Manajemen SPJ dalam LPJ
+    Route::post('/{id}/tambah-spj',[App\Http\Controllers\LpjController::class, 'tambahSpj'])->name('tambah_spj')->middleware('auth:web','checkRole:User');
+    Route::delete('/{id}/hapus-spj/{idSpj}',[App\Http\Controllers\LpjController::class, 'hapusSpj'])->name('hapus_spj')->middleware('auth:web','checkRole:User');
+
+    // Generate & Cetak PDF
+    Route::post('/{id}/generate',[App\Http\Controllers\LpjController::class, 'generate'])->name('generate')->middleware('auth:web','checkRole:User');
+    Route::get( '/{id}/cetak',[App\Http\Controllers\LpjController::class, 'cetak'])->name('cetak')->middleware('auth:web','checkRole:User');
+    Route::get( '/{id}/preview',[App\Http\Controllers\LpjController::class, 'preview'])->name('preview')->middleware('auth:web','checkRole:User');
+});
+
+    Route::get('/ppk/dashboard',[PpkDashboardController::class,'index'])->name('ppk.dashboard')->middleware('auth:web','checkRole:Ppk');
+    Route::get('/verlpj',[PpkDashboardController::class,'index'])->name('ppk.dashboard')->middleware('auth:web','checkRole:Ppk');
+
+    Route::get('/pa/dashboard',[PaDashboardController::class,'index'])->name('pa.dashboard')->middleware('auth:web','checkRole:Pa');
+    

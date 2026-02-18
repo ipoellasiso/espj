@@ -28,7 +28,7 @@
                     <th>No</th>
                     <th>Nama Rekanan</th>
                     <th>Alamat</th>
-                    <th>NPWP</th>
+                    <th>Nama Instansi/Perusahaan/Toko</th>
                     <th>Unit</th>
                     <th width="120">Aksi</th>
                 </tr>

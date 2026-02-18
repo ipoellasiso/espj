@@ -214,8 +214,8 @@
         <td class="text-center">
             <div class="ttd-name">{{ $ttd_nama_penerima }}</div>
             <div class="ttd-nip">
-                @if($ttd_nip_penerima !== '-') 
-                    NIP. {{ $ttd_nip_penerima }}
+                @if($ttd_npwp_penerima !== '-') 
+                    {{ $ttd_npwp_penerima }}
                 @else
                     ———
                 @endif

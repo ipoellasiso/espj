@@ -147,7 +147,7 @@ barang sesuai dengan Nota Pesanan / SPK / Surat Pesanan / Kontrak :
             <!-- Rekanan -->
             <td style="text-align:center;">
                 <u>{{ $spj->rekanan->nama_rekanan ?? '-' }}</u><br>
-                {{ $spj->rekanan->nip ?? '-' }}
+                {{ $spj->rekanan->npwp ?? '-' }}
             </td>
 
             <!-- PPK -->

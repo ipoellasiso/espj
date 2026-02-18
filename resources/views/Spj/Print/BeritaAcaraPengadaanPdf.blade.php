@@ -122,6 +122,8 @@ sesuai dengan ketentuan yang berlaku dan sesuai dengan Nota Pesanan/ SPK/ Surat 
             <strong>REKANAN</strong>
             <br><br><br><br><br><br>
             <u>{{ $kepada }}</u>
+            <br>
+            {{ $namapertok }}
         </td>
 
         <!-- Kolom kanan: Pejabat Pengadaan -->

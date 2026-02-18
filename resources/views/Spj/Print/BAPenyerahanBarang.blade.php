@@ -140,7 +140,7 @@ Telah menerima hasil pekerjaan/barang dari:
             <!-- Rekanan -->
             <td style="text-align:center;">
                 <u>{{ $spj->rekanan->nama_rekanan ?? '-' }}</u><br>
-                {{ $spj->rekanan->nip ?? '-' }}
+                {{ $spj->rekanan->npwp ?? '-' }}
             </td>
 
             <!-- PPK -->

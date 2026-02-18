@@ -51,6 +51,7 @@
                     </a>
                 </li>
                 
+                @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'User')
                     <li class="sidebar-title">Pengaturan</li>
 
                     <li class="sidebar-item  has-sub @if(isset($active_master_data)){{ $active_master_data }} @endif">
@@ -106,6 +107,7 @@
                             </ul>
                         @endif
                     </li>
+                @endif
 
                 @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Verifikasi')
                     <li class="sidebar-item  has-sub @if(isset($active_kelola_user)){{ $active_kelola_user }} @endif">
@@ -136,6 +138,21 @@
                 </li>
                 @endif
 
+                @if(Auth::user()->role == 'Ppk')
+                <li class="sidebar-title">Penatausahaan</li>
+                <li class="sidebar-item  has-sub @if(isset($active_penerimaan)){{ $active_penerimaan }} @endif">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-file-earmark-plus-fill"></i>
+                        <span>Pengeluaran</span>
+                    </a>
+                    <ul class="submenu @if(isset($active_sub)){{ $active_sub }} @endif">
+                        <li class="submenu-item @if(isset($active_side_regsp2d)){{ $active_side_regsp2d }} @endif">
+                            <a href="/verlpj">Verifikasi LPJ</a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
+
                 @if(Auth::user()->role == 'User')
                 <li class="sidebar-title">Penatausahaan</li>
                     <li class="sidebar-item  has-sub @if(isset($active_penerimaan)){{ $active_penerimaan }} @endif">
@@ -149,6 +166,9 @@
                             </li>
                             <li class="submenu-item @if(isset($active_side_datasp2d)){{ $active_side_datasp2d }} @endif">
                                 <a href="/spj">Input SPJ</a>
+                            </li>
+                            <li class="submenu-item @if(isset($active_side_datalpj)){{ $active_side_datalpj }} @endif">
+                                <a href="/lpj">Buat LPJ</a>
                             </li>
                         </ul>
                     </li>

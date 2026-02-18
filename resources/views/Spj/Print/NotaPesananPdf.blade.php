@@ -147,7 +147,7 @@
     </tr>
 
     <tr>
-        <td class="center"></td>
+        <td class="center">{{ $namapertok }}</td>
         <td class="center">NIP. {{ $nip_ppk }}</td>
     </tr>
 </table>

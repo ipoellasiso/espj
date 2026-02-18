@@ -70,14 +70,13 @@ public function index(Request $request)
 
                 $menu = '';
 
-                // SELALU ADA: KWITANSI
+                // ===== MENU CETAK (SELALU ADA) =====
                 $menu .= '
                     <li><a class="dropdown-item" href="'.route('spj.cetak.kwitansi.pdf', $row->id).'" target="_blank">
                         Kwitansi
                     </a></li>
                 ';
 
-                // JIKA HONOR → TAMPILKAN DAFTAR HONOR SAJA
                 if ($row->jenis_kwitansi == 'honor_transport') {
 
                     $menu .= '
@@ -88,7 +87,6 @@ public function index(Request $request)
 
                 } else {
 
-                    // JIKA BUKAN HONOR (pihak_ketiga / kontrak) → TAMPILKAN PAKET LENGKAP
                     $menu .= '
                         <li><a class="dropdown-item" href="'.route('spj.cetak.nota', $row->id).'" target="_blank">
                             Nota Pesanan
@@ -112,6 +110,25 @@ public function index(Request $request)
                     ';
                 }
 
+                // ===== CEK APAKAH SPJ SUDAH MASUK LPJ =====
+                if ($row->id_lpj) {
+
+                    // 🔥 MODE TERKUNCI → CETAK SAJA
+                    return '
+                        <span class="badge bg-danger mb-1">Sudah LPJ</span>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-printer"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                '.$menu.'
+                            </ul>
+                        </div>
+                    ';
+                }
+
+                // ===== MODE NORMAL → EDIT + HAPUS + CETAK =====
                 return '
                     <button type="button" class="btn btn-sm btn-warning editSpj" data-id="'.$row->id.'">
                         <i class="bi bi-pencil"></i>
@@ -743,11 +760,11 @@ public function cetakKwitansiPdf($id)
     if ($spj->id_rekanan && $spj->rekanan) {
         // Ambil dari tabel rekanan
         $ttd_nama_penerima = $spj->rekanan->nama_rekanan;
-        $ttd_nip_penerima  = $spj->rekanan->nip ?? '-';
+        $ttd_npwp_penerima  = $spj->rekanan->npwp ?? '-';
     } else {
         // Default: gunakan data yang sudah ada
         $ttd_nama_penerima = $spj->nama_penerima ?? '-';
-        $ttd_nip_penerima  = $spj->nip_penerima ?? '-';
+        $ttd_npwp_penerima  = $spj->nip_penerima ?? '-';
     }
 
     // kepala OPD
@@ -807,7 +824,7 @@ public function cetakKwitansiPdf($id)
         'pengguna_anggaran' => $pengguna_anggaran,
         'nip_pengguna_anggaran' => $nip_pengguna_anggaran,
         'ttd_nama_penerima' => $ttd_nama_penerima,
-        'ttd_nip_penerima'  => $ttd_nip_penerima,
+        'ttd_npwp_penerima'  => $ttd_npwp_penerima,
     ])->setPaper([0, 0, 595.28, 935.43]); // F4 size mm -> pt
 
     $namaFile = 'kwitansi-' . str_replace(['/', '\\'], '-', $spj->nomor_spj) . '.pdf';
@@ -834,6 +851,7 @@ public function cetakNota($id)
     $jabatan = "Kepala " . ($unit->nama ?? '-');
 
     $kepada = $spj->rekanan->nama_rekanan ?? '-';
+    $namapertok = $spj->rekanan->npwp ?? '-';
 
     // Format dasar DPPA
     $kode = $spj->anggaran->subKegiatan->kode;
@@ -849,6 +867,7 @@ public function cetakNota($id)
         'dari' => $dari,
         'jabatan' => $jabatan,
         'dasar' => $dasar,
+        'namapertok' => $namapertok,
     ])->setPaper([0, 0, 595.28, 935.43], 'portrait');
 
     return $pdf->stream("nota-pesanan.pdf");
@@ -911,6 +930,7 @@ public function cetakBeritaAcara($id)
     $alamat_rekanan = $spj->rekanan->alamat ?? '-';
 
     $kepada = $spj->rekanan->nama_rekanan ?? '-';
+    $namapertok = $spj->rekanan->npwp ?? '-';
 
     // Nomor BAPP
     $nomor_bapp = $spj->nomor_bapp;
@@ -939,7 +959,8 @@ public function cetakBeritaAcara($id)
         'nomor_bapp' => $nomor_bapp,
         'terbilang' => $terbilang,
         'sk_nomor' => $sk_nomor,
-        'sk_tanggal' => $sk_tanggal
+        'sk_tanggal' => $sk_tanggal,
+        'namapertok' => $namapertok,
     ])->setPaper([0, 0, 595.28, 935.43], 'portrait');
 
     return $pdf->stream("berita-acara-pengadaan.pdf");

@@ -59,7 +59,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Verifikasi' || Auth::user()->role == 'User')
+                            @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Ppk' || Auth::user()->role == 'User' || Auth::user()->role == 'Pa')
                                 <a class="dropdown-item" href="/logout"><i
                                 class="icon-mid bi bi-box-arrow-left me-2"></i> Logout</a>
                             @endif
