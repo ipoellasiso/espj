@@ -19,6 +19,12 @@ class SpjDetail extends Model
         'satuan',
         'harga',
         'jumlah',
+
+         // 🔥 PAJAK MANUAL
+        'jenis_pajak',
+        'nilai_pajak',
+        'ebilling',
+        'ntpn'
     ];
 
     /**

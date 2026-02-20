@@ -257,6 +257,11 @@ public function store(Request $request)
             $total += $volume * floatval($request->harga[$i] ?? 0);
         }
 
+        // $jenisPajak = $request->jenis_pajak;
+        // $nilaiPajak = floatval($request->nilai_pajak ?? 0);
+        // $ebilling   = $request->ebilling;
+        // $ntpn       = $request->ntpn;
+
         // 🔹 Simpan data SPJ utama
         $spj = \App\Models\Spj::create([
             'id_anggaran' => $request->id_anggaran,
@@ -275,7 +280,31 @@ public function store(Request $request)
             'nomor_ba_penerimaan' => $nomorBATerima,
             'sumber_dana' => $request->sumber_dana, // 🔥 INI WAJIB
             'jenis_kwitansi' => $request->jenis_kwitansi,
+
+            // // 🔥 PAJAK MANUAL
+            // 'jenis_pajak' => $jenisPajak,
+            // 'nilai_pajak' => $nilaiPajak,
+            // 'ebilling' => $ebilling,
+            // 'ntpn' => $ntpn,
         ]);
+
+        $pajakJenis  = $request->pajak_jenis ?? [];
+        $pajakNilai  = $request->pajak_nilai ?? [];
+        $pajakBilling = $request->pajak_ebilling ?? [];
+        $pajakNtpn    = $request->pajak_ntpn ?? [];
+
+        foreach ($pajakJenis as $i => $jenis) {
+
+            if (!$jenis) continue;
+
+            \App\Models\SpjPajak::create([
+                'id_spj'      => $spj->id,
+                'jenis_pajak' => $jenis,
+                'nilai_pajak' => floatval($pajakNilai[$i] ?? 0),
+                'ebilling'    => $pajakBilling[$i] ?? null,
+                'ntpn'        => $pajakNtpn[$i] ?? null,
+            ]);
+        }
 
         foreach ($request->nama_barang as $i => $nama) {
 
@@ -632,6 +661,11 @@ public function update(Request $request, $id)
             $jumlah = $volume * $harga;
             $rincianId = $request->id_rincian_anggaran[$i] ?? null;
 
+            $jenisPajak = $request->jenis_pajak[$i] ?? null;
+            $nilaiPajak = floatval($request->nilai_pajak[$i] ?? 0);
+            $ebilling   = $request->ebilling[$i] ?? null;
+            $ntpn       = $request->ntpn[$i] ?? null;
+
             \App\Models\SpjDetail::create([
                 'id_spj' => $spj->id,
                 'id_rincian_anggaran' => $rincianId,
@@ -640,6 +674,12 @@ public function update(Request $request, $id)
                 'satuan' => $request->satuan[$i] ?? '',
                 'harga' => $harga,
                 'jumlah' => $jumlah,
+
+                // 🔥 PAJAK MANUAL
+                'jenis_pajak' => $jenisPajak,
+                'nilai_pajak' => $nilaiPajak,
+                'ebilling' => $ebilling,
+                'ntpn' => $ntpn,
             ]);
 
             if ($rincianId) {

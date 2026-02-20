@@ -28,7 +28,11 @@ class Spj extends Model
         'id_rekanan',
         'tanggal_nope',
         'jenis_kwitansi',
-        'sumber_dana'
+        'sumber_dana',
+        'jenis_pajak',
+        'nilai_pajak',
+        'ebilling',
+        'ntpn'
     ];
 
     /**
@@ -55,6 +59,11 @@ class Spj extends Model
     public function daftarHonor()
     {
         return $this->hasMany(\App\Models\DaftarPenerimaHonor::class, 'id_spj');
+    }
+
+    public function pajak()
+    {
+        return $this->hasMany(SpjPajak::class, 'id_spj');
     }
     
 }

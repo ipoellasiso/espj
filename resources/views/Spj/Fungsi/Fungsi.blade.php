@@ -659,6 +659,57 @@
         //     width: '100%'
         // });
 
+        $(document).on('click', '#btnTambahPajak', function () {
+
+            let tbody = $('#tbodyPajak');
+
+            if (tbody.find('td').length === 1) tbody.empty();
+
+            tbody.append(`
+                <tr>
+                    <td>
+                        <select name="pajak_jenis[]" class="form-select">
+                            <option value="PPN">PPN</option>
+                            <option value="PPh 21">PPh 21</option>
+                            <option value="PPh 22">PPh 22</option>
+                            <option value="PPh 23">PPh 23</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="pajak_nilai[]" class="form-control pajakNilai" value="0">
+                    </td>
+                    <td>
+                        <input type="text" name="pajak_ebilling[]" class="form-control">
+                    </td>
+                    <td>
+                        <input type="text" name="pajak_ntpn[]" class="form-control">
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm hapusPajak">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+        });
+
+        $(document).on('click', '.hapusPajak', function () {
+            $(this).closest('tr').remove();
+        });
+
+        function hitungTotalPajak() {
+
+            let total = 0;
+
+            $('.pajakNilai').each(function () {
+                total += Number($(this).val()) || 0;
+            });
+
+            $('#totalPajakManual').text(formatRupiah(total));
+
+            return total;
+        }
+
 });
 </script>
 

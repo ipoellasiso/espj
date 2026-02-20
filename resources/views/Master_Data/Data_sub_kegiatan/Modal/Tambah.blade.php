@@ -25,7 +25,7 @@
                         <select name="id_kegiatan" id="id_kegiatan" class="form-select" required>
                             <option value="">-- Pilih Kegiatan --</option>
                             @foreach(DB::table('kegiatan')->get() as $k)
-                                <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                                <option value="{{ $k->id }}">{{ $k->kode }} - {{ $k->nama }}</option>
                             @endforeach
                         </select>
                     </div>

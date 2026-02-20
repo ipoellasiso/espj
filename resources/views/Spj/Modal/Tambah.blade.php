@@ -87,6 +87,32 @@
                 </select>
             </div>
 
+            <hr>
+            <h6>Data Pajak</h6>
+
+            <table class="table table-bordered" id="tabel-pajak">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Jenis Pajak</th>
+                        <th>Nilai Pajak</th>
+                        <th>E-Billing</th>
+                        <th>NTPN</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyPajak">
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            Belum ada pajak
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="button" class="btn btn-sm btn-primary" id="btnTambahPajak">
+                <i class="bi bi-plus"></i> Tambah Pajak
+            </button>
+
             <div class="col-md-12 mb-2">
               <label>Uraian</label>
               <textarea name="uraian" class="form-control" rows="2" placeholder="Masukkan uraian..." required></textarea>
@@ -118,6 +144,8 @@
                     </tr>
                 </tbody>
             </table>
+
+            <strong>Total Pajak: Rp <span id="totalPajakManual">0</span></strong>
 
             <div class="mt-2">
                 <strong>Total Honor: Rp <span id="totalHonorText">0</span></strong><br>

@@ -13,6 +13,7 @@ use App\Http\Controllers\LpjController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ObjekController;
 use App\Http\Controllers\PaDashboardController;
+use App\Http\Controllers\PajakController;
 use App\Http\Controllers\PpkDashboardController;
 use App\Http\Controllers\PptkController;
 use App\Http\Controllers\ProgramController;
@@ -302,3 +303,7 @@ Route::prefix('lpj')->name('lpj.')->group(function () {
 
     Route::get('/pa/dashboard',[PaDashboardController::class,'index'])->name('pa.dashboard')->middleware('auth:web','checkRole:Pa');
     
+
+    Route::get('/pajak/register', [PajakController::class, 'register'])->name('pajak.register');
+    Route::get('/pajak/register/data', [PajakController::class, 'registerData']);
+    Route::get('/pajak/register/export', [PajakController::class, 'exportExcel'])->name('pajak.export');
