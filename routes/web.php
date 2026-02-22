@@ -298,12 +298,14 @@ Route::prefix('lpj')->name('lpj.')->group(function () {
     Route::get( '/{id}/preview',[App\Http\Controllers\LpjController::class, 'preview'])->name('preview')->middleware('auth:web','checkRole:User');
 });
 
+    // HOME PPK
     Route::get('/ppk/dashboard',[PpkDashboardController::class,'index'])->name('ppk.dashboard')->middleware('auth:web','checkRole:Ppk');
     Route::get('/verlpj',[PpkDashboardController::class,'index'])->name('ppk.dashboard')->middleware('auth:web','checkRole:Ppk');
 
+    // HOME PA
     Route::get('/pa/dashboard',[PaDashboardController::class,'index'])->name('pa.dashboard')->middleware('auth:web','checkRole:Pa');
     
-
-    Route::get('/pajak/register', [PajakController::class, 'register'])->name('pajak.register');
-    Route::get('/pajak/register/data', [PajakController::class, 'registerData']);
-    Route::get('/pajak/register/export', [PajakController::class, 'exportExcel'])->name('pajak.export');
+    // REGISTER PAJAK
+    Route::get('/pajak/register', [PajakController::class, 'index'])->name('pajak.register')->middleware('auth:web','checkRole:User');
+    Route::get('/pajak/register/export', [PajakController::class, 'exportExcel'])->name('pajak.export')->middleware('auth:web','checkRole:User');
+    

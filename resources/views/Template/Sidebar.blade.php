@@ -167,8 +167,11 @@
                             <li class="submenu-item @if(isset($active_side_datasp2d)){{ $active_side_datasp2d }} @endif">
                                 <a href="/spj">Input SPJ</a>
                             </li>
-                            <li class="submenu-item @if(isset($active_side_datalpj)){{ $active_side_datalpj }} @endif">
+                            {{-- <li class="submenu-item @if(isset($active_side_datalpj)){{ $active_side_datalpj }} @endif">
                                 <a href="/lpj">Buat LPJ</a>
+                            </li> --}}
+                            <li class="submenu-item @if(isset($active_side_regpajak)){{ $active_side_regpajak }} @endif">
+                                <a href="/pajak/register">Register Pajak</a>
                             </li>
                         </ul>
                     </li>

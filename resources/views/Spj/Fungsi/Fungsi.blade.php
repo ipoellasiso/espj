@@ -673,6 +673,7 @@
                             <option value="PPh 21">PPh 21</option>
                             <option value="PPh 22">PPh 22</option>
                             <option value="PPh 23">PPh 23</option>
+                            <option value="PPh Ps 4 (2)">PPh Ps 4 (2)</option>
                         </select>
                     </td>
                     <td>
