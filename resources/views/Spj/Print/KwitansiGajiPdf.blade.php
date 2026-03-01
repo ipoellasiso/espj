@@ -7,7 +7,7 @@
         font-family: "Book Antiqua";
         font-size: 16px;
         line-height: 1.35;
-        margin: 25px 20px;             /* margin F4 lebih lebar kiri kanan */
+        margin: 25px 50px;             /* margin F4 lebih lebar kiri kanan */
     }
 
     table { width: 100%; border-collapse: collapse; }
@@ -127,11 +127,11 @@
         <td class="value" colspan="4">{{ $sub }}</td>
     </tr>
 
-    <tr>
+    {{-- <tr>
         <td class="label">Rekening Belanja</td>
         <td class="colon">:</td>
         <td class="value" colspan="4">{{ $rekening }}</td>
-    </tr>
+    </tr> --}}
 </table>
 
 <br>
@@ -177,19 +177,19 @@
 <!-- ========================== -->
 <table class="ttd-table" style="margin-top: 25px;">
     <tr>
-        <td class="ttd-title" style="width:33%; text-align:center;">
-            Menyetujui,<br>
-            Pejabat Pelaksana Teknis Kegiatan
+        <td class="ttd-title" style="width:53%; text-align:center;">
+            Mengetahui/Menyetujui<br>
+            Pengguna Anggaran
         </td>
 
-        <td class="ttd-title" style="width:33%; text-align:center;">
-            Yang Membayarkan,<br>
-            Bendahara Pengeluaran
+        <td class="ttd-title" style="width:13%; text-align:center;">
+            {{-- Yang Membayarkan,<br> --}}
+            {{-- Bendahara Pengeluaran --}}
         </td>
 
-        <td class="ttd-title" style="width:33%; text-align:center;">
+        <td class="ttd-title" style="width:53%; text-align:center;">
             Palu, {{ \Carbon\Carbon::parse($spj->tanggal)->translatedFormat('d F Y') }}<br>
-            Yang Menerima
+            Bendahara Pengeluaran
         </td>
     </tr>
 
@@ -202,20 +202,20 @@
 
     <tr>
         <td class="text-center">
-            <div class="ttd-name">{{ $pptk }}</div>
-            <div class="ttd-nip">NIP. {{ $nip_pptk }}</div>
+            <div class="ttd-name">{{ $kepala }}</div>
+            <div class="ttd-nip">NIP. {{ $nip_kepala }}</div>
+        </td>
+
+        <td class="text-center">
+            {{-- <div class="ttd-name">{{ $bendahara }}</div> --}}
+            {{-- <div class="ttd-nip">NIP. {{ $nip_bendahara }}</div> --}}
         </td>
 
         <td class="text-center">
             <div class="ttd-name">{{ $bendahara }}</div>
-            <div class="ttd-nip">NIP. {{ $nip_bendahara }}</div>
-        </td>
-
-        <td class="text-center">
-            <div class="ttd-name">{{ $ttd_nama_penerima }}</div>
             <div class="ttd-nip">
-                @if($ttd_npwp_penerima !== '-') 
-                    {{ $ttd_npwp_penerima }}
+                @if($nip_bendahara !== '-') 
+                    NIP. {{ $nip_bendahara }}
                 @else
                     ———
                 @endif
@@ -233,7 +233,7 @@
 <!-- ========================== -->
 <!-- TTD PENGGUNA ANGGARAN (Naik) -->
 <!-- ========================== -->
-<table class="ttd-table">
+{{-- <table class="ttd-table">
     <tr>
         <td class="ttd-title">Mengetahui,<br>Pengguna Anggaran</td>
     </tr>
@@ -248,7 +248,7 @@
             NIP. {{ $nip_kepala }}
         </td>
     </tr>
-</table>
+</table> --}}
 
 </body>
 </html>

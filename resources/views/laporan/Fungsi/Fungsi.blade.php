@@ -16,9 +16,10 @@ $(function () {
             {data: 'sub_kegiatan', name: 'sub_kegiatan'},
             {data: 'sumber_dana', name: 'sumber_dana', className:'text-center'},
             {data: 'pagu_anggaran', name: 'pagu_anggaran', className:'text-end'},
-            { data: 'realisasi', render: $.fn.dataTable.render.number('.', ',', 0) },
-            { data: 'sisa_pagu', render: $.fn.dataTable.render.number('.', ',', 0) },
-            { data: 'pptk', name: 'pptk' },
+            // ✅ Tambahkan name & className
+            {data: 'realisasi', name: 'realisasi', className:'text-end', render: $.fn.dataTable.render.number('.', ',', 0)},
+            {data: 'sisa_pagu', name: 'sisa_pagu', className:'text-end', render: $.fn.dataTable.render.number('.', ',', 0)},
+            {data: 'pptk', name: 'pptk'},
             {data: 'aksi', name: 'aksi', orderable: false, searchable: false, className:'text-center'},
         ]
     });

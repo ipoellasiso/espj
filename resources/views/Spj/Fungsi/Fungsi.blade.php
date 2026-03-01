@@ -211,65 +211,137 @@
             if (!idAnggaran) return;
 
             $.getJSON(`/spj/get-rekening/${idAnggaran}`, function (res) {
+
                 if (res.success) {
+
                     let rekeningSelect = $('#selectRekening');
+
+                    // 🔥 HANCURKAN SELECT2 DULU
+                    rekeningSelect.select2('destroy');
+
                     rekeningSelect.empty().append('<option value="">-- Pilih Rekening Belanja --</option>');
+
                     res.data.forEach(item => {
-                        rekeningSelect.append(`<option value="${item.kode_rekening}">${item.kode_rekening} - ${item.nama_rekening ?? ''}</option>`);
+                        rekeningSelect.append(
+                            `<option value="${item.kode_rekening}">
+                                ${item.kode_rekening} - ${item.nama_rekening ?? ''}
+                            </option>`
+                        );
                     });
+
+                    // 🔥 REINIT SESUAI MODE
+                    let jenis = $('#jenis_kwitansi').val();
+
+                    if (jenis === 'gaji') {
+                        initRekening(true);   // MULTI
+                    } else {
+                        initRekening(false);  // SINGLE
+                    }
                 }
             });
         });
 
         // === REKENING DIPILIH ===
+        // $('#selectRekening').on('change', function () {
+
+        //     // 🚫 JANGAN LOAD RINCIAN SAAT EDIT!
+        //     if (isEditMode) return;
+
+        //     let idAnggaran = $('#selectRka').val();
+        //     let idRekening = $(this).val();
+
+        //     if (!idRekening) return;
+
+        //     $.getJSON(`/spj/get-rincian/${idAnggaran}/${idRekening}`, function (res) {
+
+        //         let tbody = $('#tabel-rincian tbody');
+        //         tbody.empty();
+
+        //         if (res.success) {
+        //             res.data.forEach(item => {
+        //                 tbody.append(`
+        //                     <tr>
+        //                         <td>
+        //                             <input type="hidden" name="id_rincian_anggaran[]" value="${item.id}">
+        //                             <input type="text" name="nama_barang[]" class="form-control" value="${item.nama_barang}" readonly>
+        //                         </td>
+        //                         <td>
+        //                             <input type="hidden" name="sisa[]" value="${item.sisa}">
+        //                             <input type="number" name="volume[]" class="form-control volume" value="0" title="Sisa volume: ${item.sisa}" data-bs-toggle="tooltip">
+        //                         </td>
+        //                         <td><input type="text" name="satuan[]" class="form-control" value="${item.satuan}" readonly></td>
+        //                         <td><input type="number" name="harga[]" class="form-control harga" value="${item.harga}" data-harga-rka="${item.harga}"></td>
+        //                         <td class="jumlah text-end" data-value="0">0</td>
+        //                         <td class="text-center">
+        //                             <button type="button" class="btn btn-danger btn-sm hapusBaris">
+        //                                 <i class="bi bi-trash"></i>
+        //                             </button>
+        //                         </td>
+        //                     </tr>
+        //                 `);
+        //             });
+
+        //         // aktifkan tooltip
+        //             $('[data-bs-toggle="tooltip"]').tooltip();
+        //         }
+
+        //         hitungTotalSPJ();
+        //         cekValidasiVolume();
+        //         cekErrorGlobal();
+        //         validasiHonorDenganSpj();
+        //     });
+        // });
+
         $('#selectRekening').on('change', function () {
 
-            // 🚫 JANGAN LOAD RINCIAN SAAT EDIT!
             if (isEditMode) return;
 
             let idAnggaran = $('#selectRka').val();
-            let idRekening = $(this).val();
+            let rekeningVal = $(this).val();   // 🔥 bisa array
 
-            if (!idRekening) return;
+            if (!rekeningVal || rekeningVal.length === 0) return;
 
-            $.getJSON(`/spj/get-rincian/${idAnggaran}/${idRekening}`, function (res) {
+            let tbody = $('#tabel-rincian tbody');
+            tbody.empty();
 
-                let tbody = $('#tabel-rincian tbody');
-                tbody.empty();
+            // ===== MULTI MODE (GAJI) =====
+            if (Array.isArray(rekeningVal)) {
 
-                if (res.success) {
-                    res.data.forEach(item => {
-                        tbody.append(`
-                            <tr>
-                                <td>
-                                    <input type="hidden" name="id_rincian_anggaran[]" value="${item.id}">
-                                    <input type="text" name="nama_barang[]" class="form-control" value="${item.nama_barang}" readonly>
-                                </td>
-                                <td>
-                                    <input type="hidden" name="sisa[]" value="${item.sisa}">
-                                    <input type="number" name="volume[]" class="form-control volume" value="0" title="Sisa volume: ${item.sisa}" data-bs-toggle="tooltip">
-                                </td>
-                                <td><input type="text" name="satuan[]" class="form-control" value="${item.satuan}" readonly></td>
-                                <td><input type="number" name="harga[]" class="form-control harga" value="${item.harga}" data-harga-rka="${item.harga}"></td>
-                                <td class="jumlah text-end" data-value="0">0</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-danger btn-sm hapusBaris">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `);
+                rekeningVal.forEach(rek => {
+
+                    $.getJSON(`/spj/get-rincian/${idAnggaran}/${rek}`, function (res) {
+
+                        if (res.success) {
+
+                            res.data.forEach(item => {
+
+                                tbody.append(generateRow(item));
+                            });
+
+                            initTooltip();   // 🔥 WAJIB
+                            hitungTotalSPJ();
+                        }
                     });
 
-                // aktifkan tooltip
-                    $('[data-bs-toggle="tooltip"]').tooltip();
-                }
+                });
 
-                hitungTotalSPJ();
-                cekValidasiVolume();
-                cekErrorGlobal();
-                validasiHonorDenganSpj();
-            });
+            }
+            // ===== SINGLE MODE =====
+            else {
+
+                $.getJSON(`/spj/get-rincian/${idAnggaran}/${rekeningVal}`, function (res) {
+
+                    if (res.success) {
+
+                        res.data.forEach(item => {
+                            tbody.append(generateRow(item));
+                        });
+
+                        initTooltip();   // 🔥 WAJIB
+                        hitungTotalSPJ();
+                    }
+                });
+            }
         });
         
         function toNumber(val) {
@@ -456,31 +528,97 @@
 
         // === ON CHANGE JENIS KWITANSI ===
         $(document).on('change', '#jenis_kwitansi', function () {
-            let val = $(this).val();
 
+            let val = $(this).val();
+            let tanggalNota = $('input[name="tanggal_nope"]').closest('.col-md-4');
+
+            // ===== HONOR =====
             if (val === 'honor_transport') {
-                // Disable tanggal nota
+
+                tanggalNota.hide();
                 $('input[name="tanggal_nope"]').prop('disabled', true).val('');
 
-                // Tampilkan form honor
+                initRekening(false);   // 🔥 SINGLE
+
                 $('#formHonor').show();
-            } else {
-                // Reset
+            }
+
+            // ===== GAJI =====
+            else if (val === 'gaji') {
+
+                tanggalNota.hide();
+                $('input[name="tanggal_nope"]').prop('disabled', true).val('');
+
+                initRekening(true);    // 🔥 MULTI REKENING
+
+                $('#formHonor').hide();
+            }
+
+            // ===== BELANJA MODAL =====
+            else if (val === 'belanja_modal') {
+
+                tanggalNota.show();
                 $('input[name="tanggal_nope"]').prop('disabled', false);
 
-                // Hide form honor
-                $('#formHonor').hide();
+                initRekening(false);
 
-                // Hapus isi honor
-                $('#tbodyHonor').html(`
-                    <tr>
-                        <td colspan="4" class="text-center text-muted">
-                            Belum ada data. Tambah penerima dengan tombol di bawah.
-                        </td>
-                    </tr>
-                `);
+                $('#formHonor').hide();
+            }
+
+            // ===== DEFAULT =====
+            else {
+
+                tanggalNota.show();
+                $('input[name="tanggal_nope"]').prop('disabled', false);
+
+                initRekening(false);
+
+                $('#formHonor').hide();
             }
         });
+    //    $(document).on('change', '#jenis_kwitansi', function () {
+
+    //         let val = $(this).val();
+    //         let tanggalNota = $('input[name="tanggal_nope"]').closest('.col-md-4');
+
+    //         // ===== HONOR =====
+    //         if (val === 'honor_transport') {
+
+    //             $('input[name="tanggal_nope"]').prop('disabled', true).val('');
+    //             tanggalNota.hide();   // 🔥 HIDDEN
+
+    //             $('#formHonor').show();
+    //         }
+
+    //         // ===== GAJI =====
+    //         else if (val === 'gaji') {
+
+    //             // 🔥 Aktifkan MULTI
+    //             $('#selectRekening').attr('multiple', true);
+    //             $('input[name="tanggal_nope"]').prop('disabled', true).val('');
+    //             tanggalNota.hide();   // 🔥 HIDDEN
+
+    //             $('#formHonor').hide();
+    //         }
+
+    //         // ===== DEFAULT =====
+    //         else {
+
+    //             $('input[name="tanggal_nope"]').prop('disabled', false);
+    //             tanggalNota.show();   // 🔥 MUNCUL LAGI
+
+    //             $('#formHonor').hide();
+
+    //             // Reset honor kalau keluar dari honor mode
+    //             $('#tbodyHonor').html(`
+    //                 <tr>
+    //                     <td colspan="9" class="text-center text-muted">
+    //                         Belum ada data. Tambah penerima dengan tombol di bawah.
+    //                     </td>
+    //                 </tr>
+    //             `);
+    //         }
+    //     });
 
         $(document).on('click', '#btnTambahHonor', function () {
             let tbody = $('#tbodyHonor');
@@ -499,6 +637,15 @@
                     <td><input type="text" name="honor_nilai_pajak[]" class="form-control honorNilaiPajak" readonly></td>
 
                     <td><input type="text" name="honor_diterima[]" class="form-control honorDiterima" readonly></td>
+
+                    <!-- ✅ KOLOM BARU -->
+                    <td><input type="text" name="honor_bank[]" class="form-control"></td>
+
+                    <td><input type="text" name="honor_rekening[]" class="form-control"></td>
+
+                    <td class="text-center">
+                        <input type="checkbox" name="honor_ttd[]" value="1" class="form-check-input">
+                    </td>
 
                     <td class="text-center">
                         <button type="button" class="btn btn-sm btn-danger hapusHonor">
@@ -709,6 +856,70 @@
             $('#totalPajakManual').text(formatRupiah(total));
 
             return total;
+        }
+
+        initRekening(false);
+
+        function initRekening(multi = false) {
+
+            let rekeningSelect = $('#selectRekening');
+
+            rekeningSelect.select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modalSpj'),
+                placeholder: '-- Pilih Rekening Belanja --',
+                width: '100%',
+                closeOnSelect: !multi   // 🔥 INI PENTING UNTUK MULTI
+            });
+        }
+
+        function generateRow(item) {    
+            return `
+                <tr>
+                    <td>
+                        <input type="hidden" name="id_rincian_anggaran[]" value="${item.id}">
+                        <input type="text" name="nama_barang[]" class="form-control" value="${item.nama_barang}" readonly>
+                    </td>
+
+                    <td>
+                        <input type="hidden" name="sisa[]" value="${item.sisa}">
+
+                        <input type="number" 
+                            name="volume[]" 
+                            class="form-control volume"
+                            value="0"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Sisa volume: ${item.sisa}">
+                    </td>
+
+                    <td>
+                        <input type="text" name="satuan[]" class="form-control" value="${item.satuan}" readonly>
+                    </td>
+
+                    <td>
+                        <input type="number" name="harga[]" class="form-control harga" 
+                            value="${item.harga}" 
+                            data-harga-rka="${item.harga}">
+                    </td>
+
+                    <td class="jumlah text-end" data-value="0">0</td>
+
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm hapusBaris">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function initTooltip() {
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+
+            tooltipTriggerList.map(function (el) {
+                return new bootstrap.Tooltip(el);
+            });
         }
 
 });

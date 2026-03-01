@@ -30,9 +30,11 @@
                 <th>Nama Penerima</th>
                 <th>Jabatan</th>
                 <th>Honor (Rp)</th>
-                {{-- <th>Pajak (%)</th> --}}
+                <th>Nama Bank</th>
+                <th>No. Rek</th>
                 <th>Nilai Pajak (Rp)</th>
                 <th>Diterima (Rp)</th>
+                <th>TTD</th>
             </tr>
         </thead>
         <tbody>
@@ -42,18 +44,23 @@
                 <td>{{ $h->nama }}</td>
                 <td>{{ $h->jabatan }}</td>
                 <td class="text-right">{{ number_format($h->jumlah, 0, ',', '.') }}</td>
-                {{-- <td class="text-center">{{ number_format($h->pajak, 0) }}%</td> --}}
+                <td class="text-center">{{ $h->nama_bank }}</td>
+                <td class="text-center">{{ $h->no_rekening, }}</td>
                 <td class="text-right">{{ number_format($h->nilai_pajak, 0, ',', '.') }}</td>
                 <td class="text-right">{{ number_format($h->diterima, 0, ',', '.') }}</td>
+                <td class="text-right"></td>
             </tr>
             @endforeach
 
             <tr>
                 <th colspan="2" class="text-right">TOTAL</th>
+                <th></th>
                 <th class="text-right">{{ number_format($totalHonor, 0, ',', '.') }}</th>
+                <th></th>
                 <th></th>
                 <th class="text-right">{{ number_format($totalPajak, 0, ',', '.') }}</th>
                 <th class="text-right">{{ number_format($totalTerima, 0, ',', '.') }}</th>
+                <th></th>
             </tr>
         </tbody>
     </table>

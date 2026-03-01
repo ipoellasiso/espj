@@ -61,10 +61,9 @@ class LaporanAnggaranController extends Controller
         ];
 
         if ($request->ajax()) {
-            $anggaran = Anggaran::with('subKegiatan.kegiatan.program.bidang.urusan')
-            ->where('id_unit', $user->id_unit) // langsung pakai unit dari user login
-            ->where('tahun', $user->tahun) // 🔥 DINAMIS
-            ->orderBy('id', 'desc');
+            $anggaran = Anggaran::with('subKegiatan.kegiatan.program.bidang.urusan', 'pptk')
+                ->where('id_unit', $user->id_unit)
+                ->where('tahun', $user->tahun);
 
             return DataTables::of($anggaran)
                 ->addIndexColumn()
@@ -77,23 +76,31 @@ class LaporanAnggaranController extends Controller
                 ->addColumn('sub_kegiatan', function ($row) {
                     return ($row->subKegiatan->kode ?? '-') . ' ' . ($row->subKegiatan->nama ?? '-');
                 })
+                ->addColumn('pagu_anggaran', function ($row) {
+                    return number_format($row->pagu_anggaran);
+                })
+                ->addColumn('realisasi', function ($row) {
+                    return $row->realisasi ?? 0;
+                })
+                ->addColumn('sisa_pagu', function ($row) {
+                    return ($row->pagu_anggaran ?? 0) - ($row->realisasi ?? 0);
+                })
+                ->addColumn('pptk', function ($row) {
+                    return $row->pptk->nama ?? '-';
+                })
                 ->addColumn('aksi', function ($row) {
-
-                     $isLocked = $this->isRkaLocked(); // <-- Tambahkan ini
+                    $isLocked = $this->isRkaLocked();
 
                     $btn = '<a href="' . route('rka.show', $row->id) . '" class="btn btn-sm btn-info">
                                 <i class="bi bi-eye"></i>
                             </a> ';
 
-                    // Jika RKA atau tahap dikunci → Hilangkan Edit/Hapus
                     if ($isLocked || $row->realisasi > 0) {
-                        return $btn . '
-                            <span class="badge bg-secondary">
-                                <i class="bi bi-lock-fill"></i> Terkunci
-                            </span>';
+                        return $btn . '<span class="badge bg-secondary">
+                            <i class="bi bi-lock-fill"></i> Terkunci
+                        </span>';
                     }
 
-                    // Jika tidak terkunci → tampilkan tombol edit/delete
                     return $btn . '
                         <a href="javascript:void(0)" data-id="'.$row->id.'" class="editRka btn btn-sm btn-primary">
                             <i class="bi bi-pencil-square"></i>
@@ -102,12 +109,33 @@ class LaporanAnggaranController extends Controller
                             <i class="bi bi-trash3"></i>
                         </a>';
                 })
-                ->addColumn('pagu_anggaran', function($row) {
-                        return number_format($row->pagu_anggaran);
-                    })
-                ->addColumn('pptk', function ($row) {
-                        return $row->pptk->nama ?? '-';
-                    })
+                // ✅ Filter untuk kolom computed (tidak ada di DB langsung)
+                ->filterColumn('program', function ($query, $keyword) {
+                    $query->whereHas('subKegiatan.kegiatan.program', function ($q) use ($keyword) {
+                        $q->where('nama', 'like', "%{$keyword}%")
+                        ->orWhere('kode', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('kegiatan', function ($query, $keyword) {
+                    $query->whereHas('subKegiatan.kegiatan', function ($q) use ($keyword) {
+                        $q->where('nama', 'like', "%{$keyword}%")
+                        ->orWhere('kode', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('sub_kegiatan', function ($query, $keyword) {
+                    $query->whereHas('subKegiatan', function ($q) use ($keyword) {
+                        $q->where('nama', 'like', "%{$keyword}%")
+                        ->orWhere('kode', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('pagu_anggaran', function ($query, $keyword) {
+                    $query->where('pagu_anggaran', 'like', "%{$keyword}%");
+                })
+                ->filterColumn('pptk', function ($query, $keyword) {
+                    $query->whereHas('pptk', function ($q) use ($keyword) {
+                        $q->where('nama', 'like', "%{$keyword}%");
+                    });
+                })
                 ->rawColumns(['aksi'])
                 ->make(true);
         }

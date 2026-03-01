@@ -70,13 +70,14 @@ public function index(Request $request)
 
                 $menu = '';
 
-                // ===== MENU CETAK (SELALU ADA) =====
+                // ===== KWITANSI SELALU ADA =====
                 $menu .= '
                     <li><a class="dropdown-item" href="'.route('spj.cetak.kwitansi.pdf', $row->id).'" target="_blank">
                         Kwitansi
                     </a></li>
                 ';
 
+                // ===== HONOR =====
                 if ($row->jenis_kwitansi == 'honor_transport') {
 
                     $menu .= '
@@ -84,8 +85,27 @@ public function index(Request $request)
                             Daftar Penerima
                         </a></li>
                     ';
+                }
 
-                } else {
+                // ===== BELANJA MODAL =====
+                elseif ($row->jenis_kwitansi == 'belanja_modal') {
+
+                    $menu .= '
+                        <li><a class="dropdown-item" href="'.route('spj.cetak.ba_penyerahan', $row->id).'" target="_blank">
+                            BA Serah Terima Barang
+                        </a></li>
+                    ';
+                }
+
+                // ===== ✅ GAJI (KWITANSI ONLY) =====
+                elseif ($row->jenis_kwitansi == 'gaji') {
+
+                    // ❌ Tidak tambah apa-apa
+                    // Kwitansi saja sudah cukup
+                }
+
+                // ===== PIHAK KETIGA BIASA =====
+                else {
 
                     $menu .= '
                         <li><a class="dropdown-item" href="'.route('spj.cetak.nota', $row->id).'" target="_blank">
@@ -130,7 +150,7 @@ public function index(Request $request)
 
                 // ===== MODE NORMAL → EDIT + HAPUS + CETAK =====
                 return '
-                    <button type="button" class="btn btn-sm btn-warning editSpj" data-id="'.$row->id.'">
+                    <button type="button" class="btn btn-sm btn-warning editSpjs" data-id="'.$row->id.'">
                         <i class="bi bi-pencil"></i>
                     </button>
 
@@ -351,6 +371,10 @@ public function store(Request $request)
             $honor_jumlah  = $request->honor_jumlah ?? [];
             $honor_pajak   = $request->honor_pajak ?? [];
 
+            $honor_bank      = $request->honor_bank ?? [];
+            $honor_rekening  = $request->honor_rekening ?? [];
+            $honor_ttd       = $request->honor_ttd ?? [];
+
             foreach ($honor_nama as $i => $nama) {
 
                 $jumlah = floatval($honor_jumlah[$i] ?? 0);
@@ -369,10 +393,15 @@ public function store(Request $request)
                         'pajak'       => $pajak,
                         'nilai_pajak' => $nilai_pajak,
                         'diterima'    => $diterima,
+
+                        // ✅ BARU
+                        'nama_bank'   => $honor_bank[$i] ?? null,
+                        'no_rekening' => $honor_rekening[$i] ?? null,
+                        'ttd'         => isset($honor_ttd[$i]) ? 1 : 0,
                     ]);
                 }
             }
-        }
+        }   
 
         // 🔹 Update realisasi dan sisa pagu di tabel Anggaran
         $anggaran = \App\Models\Anggaran::find($request->id_anggaran);
@@ -626,11 +655,19 @@ public function update(Request $request, $id)
 
         foreach ($detailsLama as $lama) {
             if ($lama->id_rincian_anggaran) {
-                $rincian = \App\Models\RincianAnggaran::find($lama->id_rincian_anggaran);
+
+                $rincian = RincianAnggaran::find($lama->id_rincian_anggaran);
+
                 if ($rincian) {
-                    // Kembalikan volume lama ke rincian anggaran
+
+                    // ✅ Kembalikan volume
                     $rincian->koefisien += $lama->volume;
-                    $rincian->jumlah = $rincian->koefisien * $rincian->harga;
+
+                    // ✅ Kembalikan jumlah REAL lama (harga SPJ lama)
+                    $nilai_real_lama = $lama->volume * $lama->harga;
+                    $rincian->jumlah += $nilai_real_lama;
+
+                    // 🚫 Jangan hitung ulang pakai harga RKA
                     $rincian->save();
                 }
             }
@@ -685,12 +722,12 @@ public function update(Request $request, $id)
             if ($rincianId) {
                 $rincian = \App\Models\RincianAnggaran::find($rincianId);
                 if ($rincian) {
-                    // Tambah kembali VOLUME lama
-                    $rincian->koefisien += $lama->volume;
+                    // ✅ Kurangi volume
+                    $rincian->koefisien = max(0, $rincian->koefisien - $volume);
 
-                    // Tambah kembali JUMLAH berdasarkan HARGA REAL lama
-                    $nilai_real_lama = $lama->volume * $lama->harga;
-                    $rincian->jumlah += $nilai_real_lama;
+                    // ✅ Kurangi jumlah REAL SPJ
+                    $nilai_real = $volume * $harga;
+                    $rincian->jumlah = max(0, $rincian->jumlah - $nilai_real);
 
                     $rincian->save();
                 }
@@ -838,10 +875,19 @@ public function cetakKwitansiPdf($id)
         return chunk_split($match[0], 20, ' ');
     }, $uraianPembayaran);
 
+    if ($spj->jenis_kwitansi == 'gaji') {
+
+        $view = 'Spj.Print.KwitansiGajiPdf';   // 🔥 VIEW KHUSUS GAJI
+
+    } else {
+
+        $view = 'Spj.Print.KwitansiPdf';       // VIEW LAMA
+    }
+
     // ======================================================
 
     // Kirim ke PDF
-    $pdf = Pdf::loadView('Spj.Print.KwitansiPdf', [
+    $pdf = Pdf::loadView($view, [
         'spj' => $spj,
         'jumlah' => $jumlah,
         'terbilang' => $terbilang,
@@ -898,6 +944,9 @@ public function cetakNota($id)
     $tahun = date('Y', strtotime($spj->tanggal));
     $dasar = "Nomor DPPA/{$kode}/001/{$tahun}";
 
+    $jumlah = $spj->total;
+    $terbilang = ucwords(strtolower($this->terbilang($jumlah))) . " Rupiah";
+
     $pdf = PDF::loadView('Spj.Print.NotaPesananPdf', [
         'spj' => $spj,
         'unit' => $unit,   // 🔥 kirim data unit organisasi yang benar
@@ -908,6 +957,7 @@ public function cetakNota($id)
         'jabatan' => $jabatan,
         'dasar' => $dasar,
         'namapertok' => $namapertok,
+        'terbilang' => $terbilang,
     ])->setPaper([0, 0, 595.28, 935.43], 'portrait');
 
     return $pdf->stream("nota-pesanan.pdf");
@@ -1282,7 +1332,7 @@ public function cetakHonor($id)
         })
 
         ->orderBy('id', 'desc')
-        ->limit(20) // 🔥 WAJIB UNTUK SELECT2
+        ->limit(5) // 🔥 WAJIB UNTUK SELECT2
         ->get()
 
         ->map(function ($a) {
@@ -1309,7 +1359,7 @@ public function cetakHonor($id)
         })
 
         ->orderBy('nama_rekanan')
-        ->limit(20) // 🔥 WAJIB untuk performa
+        ->limit(5) // 🔥 WAJIB untuk performa
         ->get()
 
         ->map(function ($r) {

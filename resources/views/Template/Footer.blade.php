@@ -1,9 +1,9 @@
 <div class="footer clearfix mb-0 text-muted">
     <div class="float-start">
-        <p>{{ date('Y')}} &copy; BPKAD Kota Palu</p>
+        <p>{{ date('Y')}} &copy; espj Ver 1.0.0</p>
     </div>
-    <div class="float-end">
-        <p>SiPEL <span class="text-danger"></span>
+    {{-- <div class="float-end">
+        <p>espj <span class="text-danger"></span>
             Ver 1.0.0 </p>
-    </div>
+    </div> --}}
 </div>

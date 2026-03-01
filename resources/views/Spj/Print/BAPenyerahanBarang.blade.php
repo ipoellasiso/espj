@@ -111,7 +111,7 @@ Telah menerima hasil pekerjaan/barang dari:
 <!-- TTD -->
 @php
     $jumlahBaris = count($spj->details);
-    $spacer = max(0, 7 - $jumlahBaris);   // Minimal butuh 12 baris agar tidak mepet
+    $spacer = max(0, 1 - $jumlahBaris);   // Minimal butuh 12 baris agar tidak mepet
 @endphp
 
 @for ($i = 0; $i < $spacer; $i++)

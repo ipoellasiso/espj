@@ -20,6 +20,79 @@ td.wrap-uraian {
     min-height: 38px !important;
 }
 
+.select2-container--bootstrap-5.select2-container--focus 
+.select2-selection {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25) !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection:hover {
+    border-color: #86b7fe;
+}
+
+.select2-container--bootstrap-5 
+.select2-selection--multiple {
+    min-height: 38px !important;
+    padding-top: 2px;
+}
+
+.select2-container--bootstrap-5 
+.select2-selection--multiple 
+.select2-search__field {
+    height: 26px !important;
+    width: 100% !important;
+    margin-top: 4px;
+    font-size: 14px;
+}
+
+.select2-container--bootstrap-5 
+.select2-selection--multiple {
+    min-height: 38px !important;
+    padding: 4px 8px !important;
+}
+
+.select2-search--inline {
+    line-height: 24px !important;
+}
+
+.select2-search__field {
+    padding-left: 4px !important;
+}
+
+.select2-container--bootstrap-5 
+.select2-selection--multiple 
+.select2-search--inline {
+    flex: 1 0 100% !important;
+    width: 100% !important;
+}
+
+.select2-selection--multiple {
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+.select2-container--bootstrap-5 
+.select2-selection--multiple {
+    border: 1px solid #ced4da !important;
+    border-radius: 0.375rem !important;
+}
+
+.select2-container--bootstrap-5.select2-container--focus 
+.select2-selection--multiple {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25) !important;
+}
+
+.select2-container--bootstrap-5 
+.select2-selection--multiple:hover {
+    border-color: #86b7fe !important;
+}
+
+.select2-selection--multiple {
+    padding: 4px 8px !important;
+    min-height: 38px !important;
+}
+
 </style>
 
 <div class="card">

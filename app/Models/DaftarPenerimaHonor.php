@@ -16,6 +16,10 @@ class DaftarPenerimaHonor extends Model
         'pajak',
         'nilai_pajak',
         'diterima',
+        // ✅ BARU
+        'nama_bank',
+        'no_rekening',
+        'ttd'
     ];
 
     public function spj()

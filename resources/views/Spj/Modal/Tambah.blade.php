@@ -23,10 +23,11 @@
                 <label>Jenis Kwitansi</label>
                 <select name="jenis_kwitansi" id="jenis_kwitansi" class="form-select select2">
                     <option value="">-- Pilih Jenis Kwitansi --</option>
-                    {{-- <option value="gj_tpp">Kwitansi Gaji & TPP</option> --}}
+                    <option value="gaji">Kwitansi Gaji & TPP</option>
                     <option value="pihak_ketiga">Kwitansi Pihak Ketiga</option>
                     <option value="honor_transport">Kwitansi Honor/Insentif</option>
                     {{-- <option value="kontrak">Kwitansi Kontrak</option> --}}
+                    <option value="belanja_modal">Kwitansi Belanja Modal</option>
                 </select>
             </div>
 
@@ -44,9 +45,14 @@
 
             <div class="col-md-4 mb-2">
               <label>Pilih Rekening Belanja</label>
-              <select name="kode_rekening" id="selectRekening" class="form-select select2">
+              {{-- <select name="kode_rekening" id="selectRekening" class="form-select select2">
                 <option value="">-- Pilih Rekening Belanja --</option>
-              </select>
+              </select> --}}
+              <select name="kode_rekening[]" 
+                  id="selectRekening" 
+                  class="form-select select2" 
+                  multiple>
+          </select>
             </div>
 
             <div class="col-md-4 mb-2">
@@ -108,6 +114,9 @@
                         <th>Pajak (%)</th>
                         <th>Nilai Pajak (Rp)</th>
                         <th>Diterima (Rp)</th>
+                        <th>Nama Bank</th>        <!-- ✅ BARU -->
+                        <th>No Rekening</th>      <!-- ✅ BARU -->
+                        <th>TTD</th>              <!-- ✅ BARU -->
                         <th>Aksi</th>
                     </tr>
                 </thead>

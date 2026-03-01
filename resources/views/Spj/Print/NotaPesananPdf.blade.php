@@ -121,7 +121,8 @@
     @endforeach
 
     <tr>
-        <td colspan="5" class="td-right"><strong>Total</strong></td>
+        <td colspan="4" class="bold" style="text-align:left;">Terbilang : {{ $terbilang }}</td>
+        <td colspan="1" class="td-right"><strong>Total</strong></td>
         <td class="td-right"><strong>{{ number_format($spj->total,0,',','.') }}</strong></td>
     </tr>
 </table>
